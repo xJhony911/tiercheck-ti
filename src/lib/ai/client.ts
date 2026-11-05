@@ -5,17 +5,22 @@ import {
   type AiOutcome,
   type AiUnavailableReason,
 } from "./schemas";
+import { getUserApiKey } from "./user-key";
+import { directGenerateExplanation, directExplainConcept } from "./browser-service";
 
 /**
- * Cliente del navegador para las rutas /api/ai/*.
- * Nunca lanza: cualquier fallo se convierte en { available: false } para que la
- * interfaz siga mostrando los resultados deterministas.
+ * Cliente del navegador para las funciones de IA.
+ * - Si el usuario configuró su propia clave de Gemini en el navegador (BYOK),
+ *   consulta directamente a Google Gemini vía REST (funciona en GitHub Pages y en local).
+ * - Si no hay clave de usuario, intenta consultar las rutas /api/ai/* del servidor.
+ * - Nunca lanza: cualquier fallo se convierte en { available: false } para que la
+ *   interfaz siga mostrando los resultados deterministas.
  */
 
 type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
 const STATIC_SITE_MESSAGE =
-  "La personalización con IA no está disponible en esta versión publicada (sitio estático, sin servidor). Para usarla, ejecute el proyecto localmente o en un servidor con GEMINI_API_KEY configurada.";
+  "La IA no está activada en este navegador. Haga clic en 'Configurar API Key' para ingresar su clave gratuita de Google Gemini y activarla.";
 
 function unavailable(reason: AiUnavailableReason, message?: string): AiOutcome<never> {
   return { available: false, reason, message: message ?? AI_UNAVAILABLE_MESSAGES[reason] };
@@ -34,7 +39,7 @@ async function post<T>(url: string, body: unknown, fetchImpl: FetchLike): Promis
       body: JSON.stringify(body),
     });
   } catch {
-    return unavailable("error", "No se pudo contactar al servidor. La personalización con IA no está disponible.");
+    return unavailable("error", "No se pudo contactar al servidor. Configure su propia clave de API en el navegador si desea usar la IA.");
   }
 
   let json: unknown;
@@ -47,7 +52,7 @@ async function post<T>(url: string, body: unknown, fetchImpl: FetchLike): Promis
 
   if (res.status === 429) return unavailable("rate_limited");
   if (!res.ok) {
-    return unavailable("error", data.error ? `${data.error} La personalización con IA no está disponible.` : undefined);
+    return unavailable("error", data.error ? `${data.error}` : undefined);
   }
   if (data.available === true && "data" in data && data.data !== undefined) {
     return { available: true, data: data.data as T, model: String((data as { model?: string }).model ?? "") };
@@ -64,6 +69,10 @@ export function fetchExplanation(
   answers: Record<string, string>,
   fetchImpl: FetchLike = (i, init) => fetch(i, init),
 ): Promise<AiOutcome<AiExplanation>> {
+  const userKey = getUserApiKey();
+  if (userKey) {
+    return directGenerateExplanation(userKey, entityType, answers);
+  }
   return post<AiExplanation>("/api/ai/explain", { entityType, answers }, fetchImpl);
 }
 
@@ -72,5 +81,9 @@ export function fetchConcept(
   entityType: string | undefined,
   fetchImpl: FetchLike = (i, init) => fetch(i, init),
 ): Promise<AiOutcome<AiConcept>> {
+  const userKey = getUserApiKey();
+  if (userKey) {
+    return directExplainConcept(userKey, concept, entityType);
+  }
   return post<AiConcept>("/api/ai/concept", { concept, entityType }, fetchImpl);
 }

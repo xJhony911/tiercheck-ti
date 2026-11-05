@@ -1,140 +1,121 @@
-# TierCheck TI
+# TierCheck TI — Evaluador Preliminar de Centros de Datos
 
-Plataforma web de **evaluación preliminar del nivel Tier** de centros de datos, con motor de reglas determinista, recomendaciones técnicas priorizadas, explicaciones personalizadas con IA (Gemini) e informe PDF descargable.
+[![Desplegar en GitHub Pages](https://github.com/xJhony911/tiercheck-ti/actions/workflows/pages.yml/badge.svg)](https://github.com/xJhony911/tiercheck-ti/actions/workflows/pages.yml)
+[![Sitio Web en Vivo](https://img.shields.io/badge/Demo%20en%20Vivo-GitHub%20Pages-blue?style=flat&logo=github)](https://xjhony911.github.io/tiercheck-ti/)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16.4-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Google Gemini API](https://img.shields.io/badge/Google%20Gemini-Flash%20AI-8E75B2?logo=google)](https://ai.google.dev/)
 
-> ⚠️ **Herramienta orientativa.** TierCheck TI no otorga certificaciones oficiales ni reemplaza una auditoría profesional. El resultado es una estimación basada en respuestas **autodeclaradas** y en criterios **públicos** del sistema Tier I-IV de Uptime Institute. Este sistema es distinto de las clasificaciones Rated-1 a Rated-4 de ANSI/TIA-942; la herramienta **no** las presenta como equivalentes.
+Plataforma web moderna para la **evaluación técnica orientativa del nivel Tier (I a IV)** de infraestructura de centros de datos según los criterios públicos del estándar de **Uptime Institute**, con motor determinista de reglas, detección de contradicciones, recomendaciones técnicas priorizadas, explicaciones personalizadas con Inteligencia Artificial (**Google Gemini**) y exportación de informes ejecutivos en PDF.
 
-Proyecto técnico universitario de Ingeniería en Tecnologías de la Información.
+---
 
-## Funcionalidades
+### 🌐 Acceso Inmediato
 
-| Módulo | Descripción |
+👉 **Sitio desplegado públicamente:** **[https://xjhony911.github.io/tiercheck-ti/](https://xjhony911.github.io/tiercheck-ti/)**
+
+> ⚠️ **Aviso de alcance y responsabilidad:** TierCheck TI es una **herramienta técnica orientativa y académica**. No otorga certificaciones oficiales ni sustituye una auditoría presencial ni el estándar propietario de Uptime Institute ni la norma ANSI/TIA-942. El cálculo se fundamenta en las respuestas técnicas declaradas por el usuario.
+
+---
+
+## 🌟 Funcionalidades Principales
+
+| Módulo | Descripción Técnica |
 |---|---|
-| Inicio | Presentación, proceso, niveles Tier I-IV, ventajas y límites, advertencia visible |
-| Datos generales | Nombre (opcional), tipo de entidad, tipo de instalación y observaciones (sin datos sensibles) |
-| Cuestionario | 29 preguntas en 6 categorías (A-F), barra de avance, navegación, validación, preguntas condicionales, borrador conservado y revisión editable |
-| Motor Tier | Reglas centralizadas y deterministas; "No sé" ≠ cumplimiento; detección de contradicciones; resultado "indeterminado" si faltan datos |
-| Resultados | Nivel preliminar, explicación, requisitos cumplidos/faltantes/sin verificar, bloqueos del siguiente nivel, gráficos por categoría |
-| Recomendaciones | Derivadas de las reglas (problema, consecuencia, acción, beneficio) con prioridad alta/media/baja |
-| IA (Gemini) | Resumen ejecutivo, explicación, priorización y conceptos técnicos. **Nunca decide el Tier** |
-| Informe PDF | Datos generales, fecha, nivel, resumen, requisitos, recomendaciones y limitaciones |
-| Historial | Evaluaciones en `localStorage`: consultar y eliminar |
-| Demostración | 3 escenarios **simulados** (básica, redundante, mantenimiento concurrente) |
+| **Página de Inicio** | Introducción a los niveles Tier I-IV, proceso de evaluación, alcances, ventajas y limitaciones transparentes. |
+| **Datos Generales** | Información contextual de la instalación (organización, tipo de edificio, observaciones). Sin datos sensibles ni contraseñas. |
+| **Cuestionario Guiado** | 29 preguntas técnicas en 6 categorías (A-F: Energía, Respaldo, Climatización, Redundancia, Rutas y Continuidad), lógica condicional y guardado de borrador. |
+| **Motor de Reglas Determinista** | 20 requisitos críticos + 11 operativos. Lógica de cuello de botella: el componente más débil limita el nivel final. "No sé" jamás suma como cumplimiento. |
+| **Detector de Contradicciones** | 7 reglas que detectan inconsistencias técnicas (ej. declarar 2N con una sola acometida o generador de arranque manual). |
+| **Resultados y Métricas** | Indicador velocímetro Tier, desglose de requisitos cumplidos/faltantes, bloqueos para el siguiente nivel y gráficos de radar por subsistema. |
+| **Recomendaciones Técnicas** | Acciones correctivas priorizadas (alta, media, baja) con problema identificado, impacto y beneficio técnico. |
+| **IA con Google Gemini** | Resumen ejecutivo, glosario interactivo y explicaciones personalizadas. **La IA nunca decide ni altera el nivel Tier**. |
+| **Informe PDF Profesional** | Generación 100% en el cliente con jsPDF: membrete, metadatos, tabla de requisitos y recomendaciones descargables. |
+| **Escenarios de Demostración** | 3 casos reales simulados (Básica Tier I, Redundante Tier II y Mantenimiento Concurrente Tier III) para pruebas inmediatas. |
+| **Historial Local** | Almacenamiento privado en `localStorage` del navegador para consultar o eliminar evaluaciones anteriores. |
 
-## Requisitos
+---
 
-- **Windows 11** (también funciona en macOS/Linux)
-- **Node.js 20.9 o superior** (probado con Node 24 LTS)
-- Navegador moderno (Edge, Chrome, Firefox)
+## 🤖 Uso de la IA (Google Gemini) en la Web y en Local
 
-Instalar Node.js en Windows 11 (PowerShell):
+TierCheck TI cuenta con soporte dual para la IA:
 
-```powershell
-winget install OpenJS.NodeJS.LTS
+### 1. En la versión publicada (GitHub Pages) — "Bring Your Own Key" (BYOK)
+Cualquier usuario o evaluador puede activar la IA directamente en su navegador:
+1. Haga clic en el botón **"Configurar IA"** en la barra superior o en el panel de resultados.
+2. Ingrese una clave gratuita obtenida en [Google AI Studio](https://aistudio.google.com/apikey).
+3. Presione **"Probar y Guardar"**.
+> 🔒 **Privacidad:** La clave se almacena exclusivamente en el `localStorage` de su navegador y las consultas van directo a los servidores de Google. Nunca viajan por servidores intermedios.
+
+### 2. En tu computadora (Ejecución Local)
+Puede configurar la clave en el archivo `.env.local` para que el servidor Node.js la utilice automáticamente:
+```bash
+# Copie el archivo de ejemplo
+copy .env.example .env.local
+```
+Edite `.env.local`:
+```env
+GEMINI_API_KEY=su_clave_aqui
+GEMINI_MODEL=gemini-3.1-flash-lite
 ```
 
-Cierre y vuelva a abrir la terminal después de instalarlo.
+---
 
-## Instalación y ejecución (Windows 11)
+## 💻 Ejecución en Local (Windows 11 / Linux / macOS)
 
-Abra **PowerShell** en la carpeta del proyecto:
+### Requisitos previos
+- **Node.js 20 LTS o superior** (probado en Node 22 y 24 LTS).
+- **Git** instalado.
 
+### Pasos de instalación y arranque
 ```powershell
-cd ruta\a\tiercheck-ti
+# 1. Clonar el repositorio
+git clone https://github.com/xJhony911/tiercheck-ti.git
+cd tiercheck-ti
+
+# 2. Instalar dependencias
 npm install
+
+# 3. Iniciar el servidor de desarrollo
 npm run dev
 ```
 
-Abra <http://localhost:3000>.
+Abra su navegador en **`http://localhost:3000`**.
 
-> **Si PowerShell muestra "la ejecución de scripts está deshabilitada"** (error con `npm.ps1`), use una de estas opciones:
-> - Ejecutar con `npm.cmd` en lugar de `npm` (por ejemplo `npm.cmd run dev`), o
-> - Usar el **Símbolo del sistema (cmd)**, o
-> - Habilitar scripts solo para su usuario: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+> **Nota para PowerShell:** Si surge la alerta de directiva de ejecución en Windows, use `npm.cmd run dev` o habilite scripts locales con `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
 
-### Versión de producción
+---
 
-```powershell
-npm run build
-npm start
-```
+## 🧪 Pruebas Automatizadas y Calidad de Código
 
-## Configurar la IA (Gemini)
-
-La plataforma **funciona sin IA**. Para activar la personalización:
-
-1. Obtenga una clave en <https://aistudio.google.com/apikey>.
-2. Copie el archivo de ejemplo:
-   ```powershell
-   Copy-Item .env.example .env.local
-   ```
-3. Edite `.env.local` y escriba su clave:
-   ```
-   GEMINI_API_KEY=su_clave_real
-   GEMINI_MODEL=gemini-2.5-flash
-   ```
-4. Reinicie el servidor (`npm run dev`).
-
-Seguridad:
-
-- La clave se lee **solo en el servidor** (`src/lib/ai/gemini-client.ts`, rutas `/api/ai/*`). Nunca llega al navegador.
-- `.env.local` está en `.gitignore`. Solo se versiona `.env.example`, sin claves.
-- Si no hay clave, se agota la cuota o la API falla, la interfaz muestra el aviso **"La personalización con IA no está disponible"** y mantiene los resultados y recomendaciones deterministas. **Nunca se simula una respuesta de IA.**
-- Límite: 10 solicitudes por minuto por IP, validación Zod, cuerpo máximo de 20 KB, tiempo máximo de 20 s.
-
-## Pruebas y verificación
+El proyecto cuenta con 104 pruebas unitarias automatizadas con **Vitest**:
 
 ```powershell
-npm test            # pruebas automatizadas (Vitest)
-npm run typecheck   # verificación de tipos (TypeScript estricto)
-npm run lint        # análisis estático (ESLint)
-npm run build       # compilación de producción
+npm test            # Ejecutar las 104 pruebas unitarias (100% pasando)
+npm run typecheck   # Verificación estricta de TypeScript (tsc --noEmit)
+npm run lint        # Análisis estático de código con ESLint 9
+npm run build:pages # Compilación y exportación estática para GitHub Pages
 ```
 
-Las pruebas cubren: respuestas incompletas, condiciones no cumplidas, requisitos críticos desconocidos, niveles Tier I-IV, respuestas contradictorias, fallos de la API de IA (cuota, tiempo de espera, red, respuesta inválida), funcionamiento sin IA, límite de solicitudes, privacidad del contenido enviado a la IA, historial y generación del PDF.
+---
 
-## Estructura del proyecto
+## 📁 Documentación Académica y Técnica
 
-```
-src/
-├─ app/                  Rutas (inicio, evaluacion, resultados/[id], historial, demo, api/ai/*)
-├─ components/           Interfaz (layout, landing, questionnaire, results, history, demo, ui/shadcn)
-├─ domain/               Lógica pura, sin React ni red
-│  ├─ questionnaire/     Categorías, preguntas y visibilidad condicional
-│  ├─ rules/             requirements.ts (MATRIZ), engine.ts, contradictions.ts
-│  ├─ recommendations/   catalog.ts y generate.ts
-│  └─ scenarios/         Escenarios de demostración simulados
-└─ lib/
-   ├─ ai/                Cliente Gemini, prompts, validación, saneamiento, rutas
-   ├─ report/            Modelo del informe y exportación PDF (jsPDF)
-   ├─ storage/           Historial y borrador (localStorage)
-   ├─ validation/        Esquemas Zod
-   └─ rate-limit.ts      Limitador de solicitudes
-tests/                   Pruebas Vitest
-docs/                    ARQUITECTURA.md, REGLAS.md, EXPOSICION.md, SCRUM.md
-```
+- 📖 **[Manual de Usuario (`docs/MANUAL.md`)](docs/MANUAL.md)**: Guía completa paso a paso para usuarios finales.
+- 📐 **[Matriz de Reglas y Algoritmo (`docs/REGLAS.md`)](docs/REGLAS.md)**: Detalle matemático y lógico de cada requisito y contradicción técnica.
+- 🏗️ **[Arquitectura de Software (`docs/ARQUITECTURA.md`)](docs/ARQUITECTURA.md)**: Capas de dominio desacopladas, flujo de datos y patrones de diseño.
+- 🎤 **[Guion de Exposición (`docs/EXPOSICION.md`)](docs/EXPOSICION.md)**: Libreto preparado para la defensa universitaria del proyecto.
+- 📋 **[Gestión Ágil Scrum (`docs/SCRUM.md`)](docs/SCRUM.md)**: Backlog, historias de usuario e iteraciones de desarrollo.
 
-## Cómo modificar las reglas
+---
 
-Todo criterio Tier está en [`src/domain/rules/requirements.ts`](src/domain/rules/requirements.ts). Cada requisito declara su nivel, si es crítico, las preguntas de las que depende y una función `evaluate`. Para cambiarlo:
+## 🛠️ Tecnologías Utilizadas
 
-1. Edite o añada el requisito en `requirements.ts` (y su recomendación en `domain/recommendations/catalog.ts`).
-2. Si agrega una pregunta, defínala en `domain/questionnaire/questions.ts` con las reglas que dependen de ella.
-3. Incremente `RULES_VERSION`.
-4. Ejecute `npm test`: las pruebas verifican que preguntas, reglas y catálogo sean coherentes.
-
-Más detalle en [`docs/REGLAS.md`](docs/REGLAS.md).
-
-## Documentación adicional
-
-- [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md): decisiones técnicas y flujo de datos
-- [`docs/REGLAS.md`](docs/REGLAS.md): matriz de requisitos, algoritmo y limitaciones
-- [`docs/EXPOSICION.md`](docs/EXPOSICION.md): guion para explicar la arquitectura en una exposición
-- [`docs/SCRUM.md`](docs/SCRUM.md): organización por sprints (Scrum adaptado)
-
-## Limitaciones conocidas
-
-- Sin autenticación ni base de datos: el historial vive en el navegador (se pierde si se borra el almacenamiento).
-- El limitador de solicitudes es en memoria (una sola instancia del servidor).
-- La matriz de reglas usa únicamente criterios públicos y es una simplificación; no sustituye el estándar oficial.
-- Los porcentajes de disponibilidad mostrados en la página de inicio son referencias públicas, no garantías.
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router, Turbopack, React 19).
+- **Estilos y Componentes:** [Tailwind CSS v4](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) + Lucide Icons.
+- **Gráficos:** [Recharts](https://recharts.org/) (Radar y barras de capacidad por subsistema).
+- **IA:** [Google Gen AI SDK](https://ai.google.dev/) + REST Fallback (`gemini-3.1-flash-lite` y `gemini-3.5-flash-lite`).
+- **Generación PDF:** [jsPDF](https://github.com/parallax/jsPDF) + [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable).
+- **Validación:** [Zod](https://zod.dev/) para esquemas de datos e integridad estricta.
+- **Testing:** [Vitest](https://vitest.dev/).
+- **CI/CD:** [GitHub Actions](https://github.com/features/actions) desplegando automáticamente en [GitHub Pages](https://pages.github.com/).

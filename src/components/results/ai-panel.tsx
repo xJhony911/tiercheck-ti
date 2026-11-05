@@ -5,6 +5,7 @@ import { Bot, CircleAlert, Loader2, MessageCircleQuestion, Sparkles } from "luci
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ApiKeyDialog } from "@/components/layout/api-key-dialog";
 import { fetchConcept, fetchExplanation } from "@/lib/ai/client";
 import type { AiOutcome } from "@/lib/ai/schemas";
 import type { StoredAi } from "@/lib/validation/records";
@@ -62,9 +63,12 @@ export function AiPanel({ record, onSaved }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="size-5 text-electric" aria-hidden /> Explicación personalizada con IA
-        </CardTitle>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="size-5 text-electric" aria-hidden /> Explicación personalizada con IA
+          </CardTitle>
+          <ApiKeyDialog />
+        </div>
         <CardDescription>
           Opcional y complementaria. La IA (Gemini) solo recibe el resultado del motor, los requisitos, las
           recomendaciones, las respuestas técnicas y el tipo general de organización. <strong>Nunca decide ni modifica el nivel Tier.</strong>
@@ -102,18 +106,31 @@ export function AiPanel({ record, onSaved }: Props) {
         ) : null}
 
         {unavailableMsg && (
-          <div role="alert" className="flex items-start gap-2 rounded-xl border border-amber-500/40 bg-amber-50 p-3 text-sm text-amber-950 dark:bg-amber-500/10 dark:text-amber-100">
-            <CircleAlert className="mt-0.5 size-4 shrink-0 text-amber-600" aria-hidden />
-            <span>
-              {unavailableMsg} <strong>El diagnóstico, los requisitos y las recomendaciones de arriba siguen siendo válidos</strong>: provienen del motor de reglas, no de la IA.
-            </span>
+          <div role="alert" className="flex flex-col gap-2 rounded-xl border border-amber-500/40 bg-amber-50 p-3 text-sm text-amber-950 dark:bg-amber-500/10 dark:text-amber-100">
+            <div className="flex items-start gap-2">
+              <CircleAlert className="mt-0.5 size-4 shrink-0 text-amber-600" aria-hidden />
+              <span>
+                {unavailableMsg} <strong>El diagnóstico, los requisitos y las recomendaciones de arriba siguen siendo válidos</strong>: provienen del motor de reglas, no de la IA.
+              </span>
+            </div>
+            <div className="pl-6">
+              <ApiKeyDialog
+                trigger={
+                  <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs border-amber-500/50 bg-background/80 hover:bg-background">
+                    <Sparkles className="size-3 text-electric" /> Ingresar mi clave de Gemini para activar la IA
+                  </Button>
+                }
+              />
+            </div>
           </div>
         )}
 
-        <Button onClick={generate} disabled={loading}>
-          {loading ? <Loader2 className="animate-spin" aria-hidden /> : <Sparkles aria-hidden />}
-          {ai ? "Regenerar explicación con IA" : "Generar explicación con IA"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button onClick={generate} disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" aria-hidden /> : <Sparkles aria-hidden />}
+            {ai ? "Regenerar explicación con IA" : "Generar explicación con IA"}
+          </Button>
+        </div>
 
         <div className="space-y-3 border-t pt-5">
           <h4 className="flex items-center gap-2 font-semibold">
@@ -161,7 +178,18 @@ export function AiPanel({ record, onSaved }: Props) {
             </div>
           )}
           {conceptError && (
-            <p role="alert" className="text-sm text-amber-700 dark:text-amber-300">{conceptError}</p>
+            <div role="alert" className="flex flex-col gap-1.5 text-sm text-amber-700 dark:text-amber-300">
+              <p>{conceptError}</p>
+              <div>
+                <ApiKeyDialog
+                  trigger={
+                    <Button variant="outline" size="sm" className="h-7 text-xs border-amber-500/40">
+                      Configurar clave de Gemini
+                    </Button>
+                  }
+                />
+              </div>
+            </div>
           )}
         </div>
       </CardContent>

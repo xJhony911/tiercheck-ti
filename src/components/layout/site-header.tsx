@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { History, FlaskConical, ClipboardCheck } from "lucide-react";
 import { Logo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
+import { ApiKeyDialog } from "./api-key-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +45,7 @@ export function SiteHeader() {
               <Icon aria-hidden />
             </Link>
           ))}
+          <ApiKeyDialog />
           <ThemeToggle />
           <Link prefetch={false}
             href="/evaluacion"
