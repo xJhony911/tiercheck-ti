@@ -18,27 +18,51 @@ export interface LlmClient {
   generate(req: LlmRequest): Promise<string>;
 }
 
-export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
+export const DEFAULT_GEMINI_MODEL = "gemini-3.1-flash-lite";
+const CANDIDATE_MODELS = ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"];
 
-export function createGeminiClient(apiKey: string, model: string): LlmClient {
+export function createGeminiClient(apiKey: string, model: string = DEFAULT_GEMINI_MODEL): LlmClient {
   const ai = new GoogleGenAI({ apiKey });
+  const candidateList = [model, ...CANDIDATE_MODELS.filter((m) => m !== model)];
+
   return {
     model,
     async generate({ system, user, signal }) {
-      const response = await ai.models.generateContent({
-        model,
-        contents: user,
-        config: {
-          systemInstruction: system,
-          responseMimeType: "application/json",
-          temperature: 0.3,
-          maxOutputTokens: 2048,
-          abortSignal: signal,
-        },
-      });
-      const text = response.text;
-      if (!text) throw new Error("Respuesta vacía de Gemini.");
-      return text;
+      let lastError: unknown = null;
+
+      for (const targetModel of candidateList) {
+        if (signal?.aborted) {
+          const err = new Error("Operación cancelada por el cliente");
+          err.name = "AbortError";
+          throw err;
+        }
+
+        try {
+          const response = await ai.models.generateContent({
+            model: targetModel,
+            contents: user,
+            config: {
+              systemInstruction: system,
+              responseMimeType: "application/json",
+              temperature: 0.3,
+              maxOutputTokens: 2048,
+              abortSignal: signal,
+            },
+          });
+          const text = response.text;
+          if (text) return text;
+        } catch (err: unknown) {
+          lastError = err;
+          const msg = String((err as { message?: string })?.message ?? "");
+          if (msg.includes("abort") || signal?.aborted) {
+            throw err;
+          }
+          // Intenta con el siguiente modelo candidato si hay sobrecarga o modelo no disponible
+        }
+      }
+
+      if (lastError) throw lastError;
+      throw new Error("Respuesta vacía de Gemini.");
     },
   };
 }
